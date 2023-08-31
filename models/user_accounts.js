@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.user_accounts.hasMany(models.list_data, {
         foreignKey: {
-          name: 'user_id'
+          name: 'creator_id'
         },
         key: 'id'
       })

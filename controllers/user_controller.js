@@ -95,7 +95,13 @@ const controllers = {
         })
         console.log("User:", user);
 
-        console.log(user.dataValues)
+        const user_lists = await models.list_data.findAll({ 
+          where: { 
+            creator_id: user.id
+          }
+        })
+
+        // console.log(user.dataValues)
 
         // const user_lists = await models.list_data.findAll({
         //   where:{
@@ -140,6 +146,7 @@ const controllers = {
           msg: "Login successful",
           user: user,
           token: token,
+          lists: user_lists
           // lists: user_lists || []
         });
       } catch (error) {
