@@ -189,6 +189,55 @@ const controllers = {
       });
     }
   },
+
+  getAllUsers: async (req, res) => {
+    
+
+    try {
+      const users = await models.user_accounts.findAll()
+      console.log("User:", users);
+
+      
+
+      res.json(users)
+
+
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({
+      msg: "Internal server error",
+    });
+  }
+},
+
+shareWithUser: async (req, res) => {
+    
+
+  try {
+    const result = await models.sequelize.transaction(async (t) => {
+      const share = await models.user_list_permissions.create(
+        {  
+        list_id: req.body.list_id,
+        user_id:req.body.user_id 
+      },
+      { transaction: t }
+      );
+    
+
+    res.json(
+      {
+        msg:"shared successfully!"
+      }
+    )
+
+  })
+} catch (error) {
+  console.log("Error:", error);
+  res.status(500).json({
+    msg: "Internal server error",
+  });
+}
+},
   
 
 

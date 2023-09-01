@@ -5,6 +5,8 @@ const router = express.Router()
 
 router.post('/createlist', listController.createFoodList)
 router.post('/getlist', listController.getFoodListWithItems)
+router.post('/getalluserlists', listController.getAllUserLists)
+router.delete('/deleteitem', listController.deleteFoodItemFromList)
 
 
 

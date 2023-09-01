@@ -51,7 +51,7 @@ app.use('/api/v1/food_list', listRouter)
 app.use('/api/v1/food_items', foodRouter)
 
     app.listen(port, () => {
-      console.log(`Example app listening on port ${port}`);
+      console.log(`Example app listening on port ${port}`)
     });
   // })
   // .catch((error) => {

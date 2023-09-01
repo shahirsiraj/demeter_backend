@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
+
+      
+
       models.food_places.hasMany(models.list_data, {
         foreignKey:{
           name: 'id'

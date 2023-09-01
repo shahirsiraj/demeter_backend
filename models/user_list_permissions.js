@@ -11,8 +11,27 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      models.user_list_permissions.belongsTo(models.user_accounts, {
+        foreignKey: {
+          name: 'user_id'
+        },
+        key: 'id'
+      })
+
+      models.user_list_permissions.belongsTo(models.list_data, {
+        foreignKey: {
+          name: 'list_id'
+        },
+        key: 'id'
+      })
+   
+      
     }
+
+    
   }
+
+  
   user_list_permissions.init({
     list_id: DataTypes.INTEGER,
     user_id: DataTypes.INTEGER
