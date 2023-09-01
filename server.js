@@ -46,7 +46,9 @@ app.get('/', function(req, res) {
 // app.use('/', authRouter); // Use authController routes
 app.use('/api/v1/users', userRouter); 
 
-app.use('api/vi/foodlist', listRouter)
+app.use('/api/v1/food_list', listRouter)
+
+app.use('/api/v1/food_items', foodRouter)
 
     app.listen(port, () => {
       console.log(`Example app listening on port ${port}`);

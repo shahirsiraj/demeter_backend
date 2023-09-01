@@ -16,7 +16,7 @@ module.exports = {
           model: {
             tableName:'list_data'
           },
-          key:"list_id"
+          key:"id"
         }
       },
       food_id: {
@@ -26,20 +26,20 @@ module.exports = {
           model:{
             tableName:'food_places'
           },
-          key:'food_id'
+          key:'id'
         }
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('food_list_data');
+    await queryInterface.dropTable('food_list_data')
   }
 };

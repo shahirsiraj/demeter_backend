@@ -11,16 +11,24 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // models.food_list_data.hasMany(models.list_data, {
-      //   foreignKey:{
-      //     name: 'list_id'
-      // }, 
-      // key: 'list_id'
-      // })
+      models.food_list_data.belongsTo(models.list_data, {
+        foreignKey: {
+          name: 'id'
+        },
+        key: 'list_id'
+      })
+
+      models.food_list_data.belongsTo(models.food_places, {
+        foreignKey:{
+          name: 'id'
+      }, 
+      key: 'food_id'
+      })
 
 
     }
   }
+
   food_list_data.init({
     list_id: DataTypes.INTEGER,
     food_id: DataTypes.INTEGER

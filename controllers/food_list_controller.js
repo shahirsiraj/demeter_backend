@@ -4,6 +4,7 @@ const controllers = {
 
     createFoodList: async (req, res) => {
         try {
+            console.log(req.body)
             const result = await models.sequelize.transaction(async (t) => {
                 const creator = await models.user_accounts.findOne({ where: { id: req.body.creator_id } });
         
@@ -11,27 +12,38 @@ const controllers = {
                     throw new Error("Creator not found"); 
                 }
         
-                const newList = await models.list_data.create(
+                 const newList = await models.list_data.create(
                     {
                         list_name: req.body.list_name,
-                        creator_id: creator.id 
+                        creator_id: req.body.creator_id
                     },
                     { transaction: t }
                 );
 
-                const sharedWith = await models.user_list_permissions.create(
+                // const newListId = await models.list_data.findOne({ where: { list_name: req.body.list_name } });
+
+                // const sharedWith = await models.user_list_permissions.create(
+                //     {
+                //         list_id:newList.id,
+                //         shared_with:req.body.share
+                //     }
+                // )
+                // console.log(newList.dataValues.id)
+                res.json(
                     {
-                        list_id:newList.id,
-                        shared_with:req.body.share
+                        id: newList.dataValues.id,
+                        list_name: newList.dataValues.list_name,
+                        creator_id: newList.dataValues.creator_id
                     }
                 )
             });
-            return result
+            
         } catch (error) {
             console.error("Error:", error); 
         }
 
-        res.json()
+    
+        
 
     },
         
@@ -39,25 +51,9 @@ const controllers = {
     addFoodItemToList: async (req,res) => {
 
         try {
+            console.log(req.body)
             const result = await models.sequelize.transaction(async (t) => {
-                const list = await models.list_data.findOne({ where: { id: req.body.food_list_id } });
-        
-                if (!list) {
-                    throw new Error("list not found"); 
-                }
 
-                let checkOwnership = await models.list_data.findOne({ where: { creator_id: req.body.user } });
-
-                if (!checkOwnership) {
-                    const checkPermissions = await models.user_list_permissions.findOne({ where: { shared_with: req.body.user } });
-        
-                    if (!checkPermissions) {
-                        return res.status(403).json({
-                            message: "Access denied"
-                        });
-                    }
-                }
-               
 
                 const addItemToFoodPlaces = await models.food_places.create(
                     {
@@ -69,14 +65,34 @@ const controllers = {
                     }
 
                 ) 
+                console.log(addItemToFoodPlaces.id)
 
+                const list = await models.list_data.findOne({ where: { list_name: 'test_list' } });
+        
+                if (!list) {
+                    throw new Error("list not found"); 
+                }
 
-                // const checkPermissions = await models.user_list_permissions.findOne({ where: {}})
+                // const checkOwnership = await models.list_data.findOne({ where: { creator_id: req.body.creator_id } });
 
+                // if (!checkOwnership) {
+                //     const checkPermissions = await models.user_list_permissions.findOne({ where: { shared_with: req.body.user } });
+        
+                //     if (!checkPermissions) {
+                //         return res.status(403).json({
+                //             message: "Access denied"
+                //         });
+                //     }
+                // }
+               
+
+                
+
+                // const checkPermissions = await models.user_list_permissions.findOne({ where: {}}
 
               const addItemToList = await models.food_list_data.create(
                 {
-                    list_id: req.body.list_id,
+                    list_id: 1,
                     food_id: addItemToFoodPlaces.id
                 },
                 {
@@ -84,8 +100,10 @@ const controllers = {
                 }
               );
 
+
+              console.log(addItemToList)
+
           
-              return result;
             })
           
           
@@ -98,7 +116,9 @@ const controllers = {
           }
 
 
-        return res.json()
+        return res.json({
+            msg:'item successfully added!'
+        })
         
     },
 
@@ -154,7 +174,7 @@ const controllers = {
         try {
             const { food_list_id, food_item_id } = req.body;
     
-            const list = await models.list_data.findOne({ where: { id: food_list_id } });
+            const list = await models.food_list_data.findOne({ where: { id: food_list_id } });
     
             if (!list) {
                 throw new Error("List not found");
@@ -193,21 +213,23 @@ const controllers = {
     getFoodListWithItems: async (req, res) => {
         try {
 
-            let checkOwnership = await models.list_data.findOne({ where: { creator_id: req.body.user } });
+            // let checkOwnership = await models.list_data.findOne({ where: { creator_id: req.body.user } });
 
-            if (!checkOwnership) {
-            const checkPermissions = await models.user_list_permissions.findOne({ where: { shared_with: req.body.user } });
+        //     if (!checkOwnership) {
+        //     const checkPermissions = await models.user_list_permissions.findOne({ where: { shared_with: req.body.user } });
 
-            if (!checkPermissions) {
-                return res.status(403).json({
-                    message: "Access denied"
-                });
-            }
-        }
-            const foodListId = req.params.foodListId; // Assuming the route parameter is named foodListId
+        //     if (!checkPermissions) {
+        //         return res.status(403).json({
+        //             message: "Access denied"
+        //         });
+        //     }
+        // }
+            const foodListId = req.body.list_id; 
             
-            const foodList = await models.list_data.findOne({
-                where: { id: foodListId },
+            console.log(foodListId)// Assuming the route parameter is named foodListId
+            
+            const foodList = await models.list_data.findAll({
+                where: { id: foodListId},
                 include: [{
                     model: models.food_list_data,
                     include: models.food_places
@@ -217,10 +239,10 @@ const controllers = {
             if (!foodList) {
                 throw new Error("Food list not found");
             }
-    
-            return res.json({
-                foodList: foodList
-            });
+
+            const formattedResponse = foodList.flatMap(item => item.food_list_data.map(data => data.food_place));
+
+        return res.json(formattedResponse);;
         } catch (err) {
             console.error(err);
             return res.status(500).json({

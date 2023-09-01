@@ -15,7 +15,7 @@ const controller = {
   let parsedCoordinates
   
   if(req.body.location) {
-    const parsedCoordinates = parseCoordinates(coordinates);
+    parsedCoordinates = parseCoordinates(coordinates);
     console.log(parsedCoordinates)
   }
  

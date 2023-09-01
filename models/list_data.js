@@ -10,9 +10,18 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      
       models.list_data.belongsTo(models.user_accounts, {
         foreignKey: {
           name: 'creator_id'
+        },
+        key: 'id'
+      })
+
+
+      models.list_data.hasMany(models.food_list_data, {
+        foreignKey: {
+          name: 'list_id'
         },
         key: 'id'
       })
@@ -20,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   list_data.init({
-    list: DataTypes.STRING,
+    list_name: DataTypes.STRING,
     creator_id: DataTypes.INTEGER
   }, {
     sequelize,

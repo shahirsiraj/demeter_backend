@@ -16,7 +16,7 @@ module.exports = {
           model: {
             tableName: 'list_data'
           },
-          key:'list_id'
+          key:'id'
         }
       },
       user_id: {
@@ -29,11 +29,11 @@ module.exports = {
           key:'id'
         }
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
